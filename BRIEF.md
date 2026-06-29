@@ -32,11 +32,24 @@ carrots and bread trending down, so cut soup prep 15%" is a colleague showing
 their work. **The visible confluence of inputs IS the trust mechanism. This is
 the core design idea. Do not bury it.**
 
-The build must make three things unmistakable:
+The build must make four things unmistakable:
 1. This is forward-looking (today and tomorrow), not a rear-view report.
 2. The recommendation is visibly derived from named inputs.
 3. The chef is always in command (accept, adjust, dismiss). A prediction the
    user can't override is a prediction they'll abandon the first time it's wrong.
+4. The tool respects the asymmetry of being wrong. Over-prepping wastes a few kg
+   of something cheap. Under-prepping means 86ing a dish in front of a paying
+   guest, which costs far more. Chefs over-prep on purpose, because running out
+   is worse than waste. So Mise only cuts what is cheap to bin or quick to
+   remake, it leaves high-stakes items alone, and it says so on the call (e.g.
+   "soup base batches fast if a rush hits"). A cut that ignores the cost of
+   running out is a cut a chef is right to ignore.
+
+There is a fifth thing the tool must earn over time, not just in a single
+glance: trust that the calls have been right before. A chef who followed
+yesterday's advice should be shown how it turned out. The Apply / Ignore /
+Adjust actions are not one-off buttons, they close a loop. The outcome of a past
+call (waste avoided, no shortfalls) is the strongest argument for today's call.
 
 ---
 
@@ -87,15 +100,28 @@ Scenario: hotel restaurant, Tuesday breakfast + lunch service.
 - Salad greens: usage steady, no adjustment needed (use this as a "hold" item, to
   prove the tool isn't just telling you to cut everything).
 
+Why these items are safe to cut (the asymmetry, made concrete): soup base and
+bread rolls are both cheap to bin and fast to top up mid-service, so a cut that
+runs slightly short is low-stakes and recoverable. That is exactly why the tool
+recommends cutting them and not, say, a portioned protein where running out
+means 86ing a dish. Each cut carries a recovery note that says so.
+
+Last comparable day (the feedback loop, shown quietly on screen 1):
+- Last Tuesday: chef applied the soup cut, **0.9 kg binned** (down from a typical
+  ~5.8 kg), **no shortfalls**. The call was right, and the tool shows it.
+
 Hero recommendation:
 > **Prep light today.** Booked covers are 19% below a normal Tuesday, and the
 > last four Tuesdays all ran soft. Cut soup base by 15% and drop the bread par by
-> ~18 rolls. Hold everything else.
+> ~18 rolls. Both are quick to top up if it gets busy. Hold everything else.
 
-Supporting line items (each with [Apply] [Ignore] [See why]):
-- Soup base: **cut 15%** (≈5 kg less), over-prepped 4 of last 4 Tuesdays
-- Bread rolls: **drop par by 18**, running 22% binned all week
-- Salad greens: **hold**, usage steady, no change
+Supporting line items (each with [Apply] [Ignore] [See why], and a recovery note
+on each cut):
+- Soup base: **cut 15%** (≈5 kg less), over-prepped 4 of last 4 Tuesdays.
+  Recovery: batches in ~20 min if a rush hits.
+- Bread rolls: **drop par by 18**, running 22% binned all week. Recovery: par
+  bakes on demand, no real downside to running tight.
+- Salad greens: **hold**, usage steady, no change.
 
 ---
 
@@ -120,6 +146,11 @@ screen.
   + a one-tap [Apply] [Ignore] [See why].
 - A subtle confidence cue on the hero call (e.g. "High confidence, 4 of 4
   Tuesdays match"). Honest hedging builds trust.
+- **One quiet "last time" line** (the feedback loop), set apart from the call so
+  it never competes with it: "Last Tuesday: you cut 15%, waste dropped to 0.9 kg,
+  no shortfalls." Numbers in mono. This is the trust-over-time anchor, the proof
+  that following the brief has worked before. It is small and calm on purpose; it
+  reassures, it does not shout.
 
 ### Screen 2: See why (the full confluence + reasoning)
 Reached by tapping See why on the hero or any line item.
@@ -217,11 +248,17 @@ endpoint so changing the inputs changes the recommendation:
 - Prompt shape: "You are a pre-shift culinary forecasting assistant. Given
   today's booked covers, this weekday's historical pattern, recent ingredient
   usage, and waste history, recommend prep adjustments. Show your reasoning in
-  one short paragraph. Stay advisory; the chef decides. Return JSON:
+  one short paragraph. Stay advisory; the chef decides. Only recommend cutting
+  items that are cheap to waste or quick to remake, and for each cut give a
+  one-line recovery note; never cut a high-stakes item where running out means
+  86ing a dish. Return JSON:
   { hero, reasoning, confidence, items: [{ingredient, direction, magnitude,
-  why}] }."
+  why, recoveryNote}] }."
 - Front end renders the JSON into the screens above. Keep canned data as the
   fallback so a failed call never breaks the demo.
+- The canned data additionally carries a `yesterday` result object that feeds the
+  quiet "last time" line on screen 1: { weekday, appliedAction, wasteKg,
+  typicalWasteKg, shortfalls }. This is local history, not part of the live call.
 
 The live version is the strongest possible signal for an AI-forward team: a
 working AI advisor that reasons over data, not a mockup of one. But it is upside,
@@ -240,6 +277,11 @@ never a dependency.
 - [ ] Every prep item can be applied, ignored, or adjusted. The chef is never
       locked into a prediction.
 - [ ] At least one "hold" item exists, so it doesn't read as "cut everything."
+- [ ] Cuts visibly acknowledge the cost of running out: each cut carries a
+      recovery or low-stakes note, and high-stakes items are left alone. The tool
+      never blindly says cut.
+- [ ] Screen 1 shows whether the last comparable day's call was right (a quiet
+      "last time" line with the waste outcome and any shortfalls).
 - [ ] A confidence/hedge cue is present on the hero call.
 - [ ] Two screens only. Tablet-first.
 - [ ] It looks like functional, utilitarian kitchen software, not a design

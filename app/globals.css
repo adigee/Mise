@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+  Mise design tokens (see BRIEF.md Section 4).
+  Warm near-black canvas, a single ember accent, three-voice type.
+  No green anywhere. Hairline dividers, not cards.
+*/
+:root {
+  --bg-base: #14110e; /* warm near-black canvas */
+  --bg-raised: #1c1916; /* hairline-separated zones, not cards */
+  --fg: #f5f1ea; /* warm off-white */
+  --fg-muted: #9b9389; /* labels, secondary data */
+  --line: rgba(245, 241, 234, 0.08); /* hairline dividers */
+  --accent: #ff5a1f; /* ember, the single signal color, used sparingly */
+  --accent-dim: #b8451a; /* pressed / secondary accent */
+  --cut: #ff5a1f; /* "cut" direction uses ember */
+  --hold: #9b9389; /* "hold" is neutral, intentionally quiet */
+  --up: #e8c547; /* rare "increase", warm amber, not green */
+}
+
+@theme inline {
+  /* colors */
+  --color-base: var(--bg-base);
+  --color-raised: var(--bg-raised);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-cut: var(--cut);
+  --color-hold: var(--hold);
+  --color-up: var(--up);
+
+  /* type: serif = voice, sans = interface, mono = data */
+  --font-serif: var(--font-instrument-serif);
+  --font-sans: var(--font-inter-tight);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--line);
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--fg);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Mono figures read as an instrument readout: tabular, precise. */
+.tnum {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* One purposeful transition when swapping between the two screens. */
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Uppercase kicker labels (Inter Tight, letter-spaced, muted). */
+.kicker {
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--fg-muted);
+}
