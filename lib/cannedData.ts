@@ -1,92 +1,171 @@
 import type { Recommendation } from "./types";
 
-// The verbatim Tuesday scenario from BRIEF.md Section 2. This is the single
-// source the UI renders. The live /api/recommend route returns the same shape,
-// with canned data as the fallback so a failed call never breaks the demo.
+// The verbatim Tuesday dinner-service scenario from the orbisk Figma frames.
+// This is the single source the UI renders. The live /api/recommend route
+// returns the same shape, with canned data as the fallback so a failed call
+// never breaks the demo.
+//
+// The Focaccia detail (paragraph + trend) is taken exactly from the Figma
+// overlay. The other items reuse the same overlay template with copy derived
+// from their list line and consistent four-Tuesday waste trends.
 //
 // House style: no em dashes anywhere in copy (commas, periods, parentheses).
 export const cannedRecommendation: Recommendation = {
   weekday: "Tuesday",
-  date: "29 June",
-  service: "Breakfast and lunch",
+  date: "30 June",
+  service: "Dinner service",
+  covers: {
+    total: "73 🍽️",
+    detail: "68 covers booked + 5 walk-ins",
+  },
 
-  hero: "Prep light today.",
-  whyLine: "68 booked vs 84 typical, 4 soft Tuesdays running.",
-  reasoning:
-    "Booked covers are 19% below a normal Tuesday, and the last four Tuesdays all ran soft, between 12 and 18% below the weekly average. The soup base has been over-prepped on every one of those Tuesdays, averaging 5.8 kg binned, and bread rolls run about 22% binned across the whole week. Both are cheap to bin and quick to top up mid-service, so trimming them today carries little downside even if it gets busy. Salad greens are tracking to normal usage, so they hold. Cut soup base by 15% and drop the bread par by about 18 rolls. Hold everything else.",
-  confidence: "high",
-  confidenceNote: "High confidence, 4 of 4 Tuesdays match.",
+  hero: "Reduce prep on focaccia and Brussels sprouts",
+  subline: "Hold on lamb and prawn",
+  confidenceNote: "High confidence, based on past 4 Tuesdays",
 
-  items: [
+  statCards: [
     {
-      id: "soup-base",
-      ingredient: "Soup base",
-      direction: "cut",
-      magnitude: "Cut 15%",
-      effect: "≈5 kg less",
-      why: "Over-prepped 4 of last 4 Tuesdays, avg 5.8 kg binned.",
-      recoveryNote: "Batches in about 20 min if a rush hits.",
-      defaultValue: 15,
-      unit: "%",
+      amount: "19",
+      ingredient: "focaccia rolls",
+      caption: "wasted yesterday",
+      avg: "(avg 7 rolls)",
     },
     {
-      id: "bread-rolls",
-      ingredient: "Bread rolls",
-      direction: "cut",
-      magnitude: "Drop par by 18",
-      effect: "18 fewer rolls",
-      why: "Running 22% binned all week.",
-      recoveryNote: "Par bakes on demand, no real downside to running tight.",
-      defaultValue: 18,
-      unit: "rolls",
-    },
-    {
-      id: "salad-greens",
-      ingredient: "Salad greens",
-      direction: "hold",
-      magnitude: "Hold",
-      why: "Usage steady, no change.",
+      amount: "6 kgs",
+      ingredient: "brussels sprouts",
+      caption: "wasted yesterday",
+      avg: "(avg 1kg)",
     },
   ],
 
-  confluence: {
-    forward: {
-      coversBooked: 68,
-      coversTypical: 84,
-      weekday: "Tuesday",
-      service: "Breakfast and lunch",
-      context: "Light, rainy",
-    },
-    historical: {
-      summary:
-        "The last 4 Tuesdays ran 12 to 18% below the weekly average. A consistent soft day.",
-      trend: [
-        { label: "4 Tue ago", covers: 71 },
-        { label: "3 Tue ago", covers: 69 },
-        { label: "2 Tue ago", covers: 74 },
-        { label: "Last Tue", covers: 70 },
-        { label: "Today", covers: 68 },
+  items: [
+    {
+      id: "focaccia",
+      ingredient: "Focaccia with whipped lardo",
+      direction: "cut",
+      magnitude: "Reduce bake by 10 rolls",
+      effect: "10 fewer rolls",
+      magnitudePrefix: "Reduce bake by",
+      unit: "rolls",
+      why: "22% binned all week. Batches bake in 20 mins if rush hits",
+      detailLabel: "Focaccia",
+      detailParagraph:
+        "10 to 19 focaccia rolls were binned per day over the past 4 Tuesdays. Last week the chef applied the recommended cut and only 1 roll was binned.",
+      wasteTrend: [
+        { label: "4 Tue ago", value: 13 },
+        { label: "3 Tue ago", value: 9 },
+        { label: "2 Tue ago", value: 10 },
+        { label: "Last tuesday", value: 1 },
       ],
+      defaultValue: 10,
+      confidenceNote: "High confidence, based on past 4 Tuesdays",
     },
-    waste: {
-      summary:
-        "Soup base over-prepped 4 Tuesdays running, averaging 5.8 kg binned. Last Tuesday the chef applied the cut and it held at 0.9 kg. Bread rolls run about 22% binned across the week.",
-      trend: [
-        { label: "5 Tue ago", wasteKg: 6.1 },
-        { label: "4 Tue ago", wasteKg: 5.4 },
-        { label: "3 Tue ago", wasteKg: 6.3 },
-        { label: "2 Tue ago", wasteKg: 5.4 },
-        { label: "Last Tue", wasteKg: 0.9 },
+    {
+      id: "brussels",
+      ingredient: "Fried Brussels sprouts with mint",
+      direction: "cut",
+      magnitude: "Reduce prep by 5kgs",
+      effect: "5 kgs saved",
+      magnitudePrefix: "Reduce prep by",
+      unit: "kgs",
+      why: "A total of 13.3kgs binned over the past 3 days.",
+      detailLabel: "Brussels sprouts",
+      detailParagraph:
+        "4 to 6 kgs of Brussels sprouts were binned per day over the past 4 Tuesdays, 13.3 kgs in the last 3 days alone. Trimming the prep still holds plenty back for a rush.",
+      wasteTrend: [
+        { label: "4 Tue ago", value: 6 },
+        { label: "3 Tue ago", value: 4 },
+        { label: "2 Tue ago", value: 5 },
+        { label: "Last tuesday", value: 5 },
       ],
+      defaultValue: 5,
+      confidenceNote: "High confidence, based on past 4 Tuesdays",
     },
-  },
-
-  // The feedback loop: last Tuesday the chef applied the cut and it was right.
-  yesterday: {
-    weekday: "Tuesday",
-    appliedAction: "cut 15%",
-    wasteKg: 0.9,
-    typicalWasteKg: 5.8,
-    shortfalls: 0,
-  },
+    {
+      id: "prawn",
+      ingredient: "Prawn with champagne and peach",
+      direction: "hold",
+      magnitude: "Hold",
+      why: "Usage steady, minimal waste",
+      detailLabel: "Prawn",
+      detailParagraph:
+        "Prawn usage has tracked steady over the past 4 Tuesdays with minimal waste. No change recommended.",
+      wasteTrend: [
+        { label: "4 Tue ago", value: 1 },
+        { label: "3 Tue ago", value: 0.5 },
+        { label: "2 Tue ago", value: 1 },
+        { label: "Last tuesday", value: 0.5 },
+      ],
+      confidenceNote: "Steady across the past 4 Tuesdays",
+    },
+    {
+      id: "agnolotti",
+      ingredient: "Agnolotti and lettuces",
+      direction: "hold",
+      magnitude: "Hold",
+      why: "No lettuce binned in the past 2 days!",
+      detailLabel: "Agnolotti",
+      detailParagraph:
+        "Agnolotti and lettuces have held steady, with no lettuce binned in the past 2 days. No change recommended.",
+      wasteTrend: [
+        { label: "4 Tue ago", value: 1 },
+        { label: "3 Tue ago", value: 1 },
+        { label: "2 Tue ago", value: 0.5 },
+        { label: "Last tuesday", value: 0 },
+      ],
+      confidenceNote: "Steady across the past 4 Tuesdays",
+    },
+    {
+      id: "lamb",
+      ingredient: "Lamb tonnato",
+      direction: "hold",
+      magnitude: "Hold",
+      why: "Usage steady, minimal waste",
+      detailLabel: "Lamb",
+      detailParagraph:
+        "Lamb usage has tracked steady over the past 4 Tuesdays with minimal waste. No change recommended.",
+      wasteTrend: [
+        { label: "4 Tue ago", value: 1 },
+        { label: "3 Tue ago", value: 0.5 },
+        { label: "2 Tue ago", value: 1 },
+        { label: "Last tuesday", value: 0.5 },
+      ],
+      confidenceNote: "Steady across the past 4 Tuesdays",
+    },
+    {
+      id: "ribs",
+      ingredient: "Coca-Cola short ribs",
+      direction: "hold",
+      magnitude: "Hold",
+      why: "No ribs binned",
+      detailLabel: "Short ribs",
+      detailParagraph:
+        "No short ribs have been binned over the past 4 Tuesdays. No change recommended.",
+      wasteTrend: [
+        { label: "4 Tue ago", value: 0.5 },
+        { label: "3 Tue ago", value: 0 },
+        { label: "2 Tue ago", value: 0 },
+        { label: "Last tuesday", value: 0 },
+      ],
+      confidenceNote: "Steady across the past 4 Tuesdays",
+    },
+    {
+      id: "dessert",
+      ingredient:
+        "Bear mints, Donnie's raspberries, and bananas foster sundae with caramel sauce",
+      direction: "hold",
+      magnitude: "Hold",
+      why: "Usage steady, no change.",
+      detailLabel: "Dessert",
+      detailParagraph:
+        "The dessert course has tracked steady over the past 4 Tuesdays with no meaningful waste. No change recommended.",
+      wasteTrend: [
+        { label: "4 Tue ago", value: 1 },
+        { label: "3 Tue ago", value: 0.5 },
+        { label: "2 Tue ago", value: 1 },
+        { label: "Last tuesday", value: 0.5 },
+      ],
+      confidenceNote: "Steady across the past 4 Tuesdays",
+    },
+  ],
 };
