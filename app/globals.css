@@ -13,6 +13,7 @@
   --line: rgba(245, 241, 234, 0.08); /* hairline dividers */
   --accent: #ff5a1f; /* ember, the single signal color, used sparingly */
   --accent-dim: #b8451a; /* pressed / secondary accent */
+  --card: #202020; /* raised waste stat-card surface */
   --cut: #ff5a1f; /* "cut" direction uses ember */
   --hold: #9b9389; /* "hold" is neutral, intentionally quiet */
   --up: #e8c547; /* rare "increase", warm amber, not green */
@@ -27,6 +28,7 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
+  --color-card: var(--card);
   --color-cut: var(--cut);
   --color-hold: var(--hold);
   --color-up: var(--up);
@@ -65,6 +67,27 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* The detail overlay: a scrim fades in, the panel slides from the right. */
+@keyframes scrimin {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes panelin {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 

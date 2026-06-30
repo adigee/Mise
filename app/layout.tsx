@@ -35,7 +35,7 @@ export default function RootLayout({
       lang="en"
       className={`${instrumentSerif.variable} ${interTight.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-base text-fg">{children}</body>
+      <body className="min-h-full bg-[#0a0807] text-fg">{children}</body>
     </html>
   );
 }
